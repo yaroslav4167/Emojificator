@@ -16,11 +16,6 @@ def decode_from_hex(txt):
 		decoded = 'Ошибка декодирования.'
 	return decoded
 
-
-menu = 'Выберите действие:\n' + \
-	'e - Зашифровать текст\n' + \
-	'd - Расшифровать текст\n' + \
-	'exit - Выйти из программы'
 emojies = {
 	'0': ':grinning:',
 	'1': ':smiley:',
@@ -39,21 +34,35 @@ emojies = {
 	'e': ':sunglasses:',
 	'f': ':face_with_hand_over_mouth:'
 }
+
+def emojificate(txt):
+	enc_hex = encode_to_hex(txt)
+	emojificated = ''
+	for char in enc_hex:
+		emojificated += emojies[char]
+	return emojificated
+			
+def deemojificate(txt):
+	txt = txt.replace(' ', '')
+	for x, y in zip(emojies.keys(), emojies.values()):
+		txt = txt.replace(y, x)
+	decoded = decode_from_hex(txt)
+	return decoded
+
+menu = 'Выберите действие:\n' + \
+	'e - Зашифровать текст\n' + \
+	'd - Расшифровать текст\n' + \
+	'exit - Выйти из программы'
+	
 exit = False
 while not exit:
 	print(menu)
 	command = input('> ')
 	if command == 'e': 
-		enc_hex = encode_to_hex(input('Enc text: '))
-		emojufucate = ''
-		for char in enc_hex:
-			emojufucate += emojies[char]
-		print('=====\n'+emojufucate+'\n=====')
+		enc = emojificate(input('Enc text: '))
+		print('=====\n'+enc+'\n=====')
 	if command == 'd':
-		dec_txt = input('Dec text: ').replace(' ', '')
-		for x, y in zip(emojies.keys(), emojies.values()):
-			dec_txt = dec_txt.replace(y, x)
-		dec_txt = decode_from_hex(dec_txt)
-		print('=====\n'+dec_txt+'\n=====')
+		dec = deemojificate(input('Dec text: '))
+		print('=====\n'+dec+'\n=====')
 	if command == 'exit':
 		exit = True
