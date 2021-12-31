@@ -1,5 +1,6 @@
 import binascii
 import base64
+from enc_pattern import emojies;
 
 
 def encode_to_hex(txt):
@@ -21,30 +22,31 @@ def decode_from_hex(txt):
     return decoded
 
 
-emojies = {
-    '0': ':grinning:',
-    '1': ':smiley:',
-    '2': ':smile:',
-    '3': ':grin:',
-    '4': ':laughing:',
-    '5': ':sweat_smile:',
-    '6': ':joy:',
-    '7': ':rofl:',
-    '8': ':relaxed:',
-    '9': ':blush:',
-    'a': ':innocent:',
-    'b': ':zany_face:',
-    'c': ':thinking:',
-    'd': ':face_with_monocle:',
-    'e': ':sunglasses:',
-    'f': ':face_with_hand_over_mouth:'
-}
+# emojies = {
+#     '0': ':grinning:',
+#     '1': ':smiley:',
+#     '2': ':smile:',
+#     '3': ':grin:',
+#     '4': ':laughing:',
+#     '5': ':sweat_smile:',
+#     '6': ':joy:',
+#     '7': ':rofl:',
+#     '8': ':relaxed:',
+#     #'9': ':blush:',
+#     #'a': ':innocent:',
+#     #'b': ':zany_face:',
+#     #'c': ':thinking:',
+#     #'d': ':face_with_monocle:',
+#     #'e': ':sunglasses:',
+#     #'f': ':face_with_hand_over_mouth:'
+# }
 
 
 def emojificate(txt):
     enc_hex = encode_to_hex(txt)
+    enc_base = convert_base(enc_hex, len(emojies), 16)
     emojificated = ''
-    for char in enc_hex:
+    for char in enc_base.lower():
         emojificated += emojies[char]
     return emojificated
 
@@ -53,8 +55,20 @@ def deemojificate(txt):
     txt = txt.replace(' ', '')
     for x, y in zip(emojies.keys(), emojies.values()):
         txt = txt.replace(y, x)
-    decoded = decode_from_hex(txt)
+    hex = convert_base(txt, 16, len(emojies))
+    decoded = decode_from_hex(hex)
     return decoded
+
+def convert_base(num, to_base=10, from_base=10): # Thx, MaxU! https://ru.stackoverflow.com/questions/607802/%D0%9F%D0%B5%D1%80%D0%B5%D0%B2%D0%BE%D0%B4-%D0%B8%D0%B7-%D0%BB%D1%8E%D0%B1%D0%BE%D0%B9-%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B-%D1%81%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B2-%D0%BB%D1%8E%D0%B1%D1%83%D1%8E
+    # first convert to decimal number
+    n = int(num, from_base) if isinstance(num, str) else num
+    # now convert decimal to 'to_base' base
+    alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    res = ""
+    while n > 0:
+        n,m = divmod(n, to_base)
+        res += alphabet[m]
+    return res[::-1]
 
 
 menu = 'Выберите действие:\n' + \
